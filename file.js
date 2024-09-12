@@ -1,85 +1,117 @@
+const rockBtn = document.querySelector(".rock");
+const paperBtn = document.querySelector(".paper");
+const scissorBtn = document.querySelector(".scissors");
+
+let printed = false;
+
+let playerScore = 0;
+let computerScore = 0;
+let roundNumber = 1;
+let playerChoice;
+let computerChoice;
+
+const container = document.createElement("div");
+document.body.appendChild(container);
+
+rockBtn.addEventListener("click", () => {
+    playerChoice = 'rock';
+    computerChoice = getComputerChoice();
+    playGame(playerChoice, computerChoice);
+});
+
+paperBtn.addEventListener("click", () => {
+    playerChoice = 'paper';
+    computerChoice = getComputerChoice();
+    playGame(playerChoice, computerChoice);
+});
+
+scissorBtn.addEventListener("click", () => {
+    playerChoice = 'scissors';
+    computerChoice = getComputerChoice();
+    playGame(playerChoice, computerChoice);
+});
+
 function getComputerChoice() {
     let computerChoice = Math.floor(Math.random() * 3); // returns 0, 1, 2
-    if (computerChoice == 0) return "Rock";
-    else if (computerChoice == 1) return "Paper";
-    else return "Scissors";
+    if (computerChoice == 0) return "rock";
+    else if (computerChoice == 1) return "paper";
+    else return "scissors";
 }
 
-function getPlayerChoice() {
-    let playerChoice = prompt("Choose rock , paper or scissors");
-    return playerChoice;
-}
-
-function checkWinner() {
-    let computerChoice = getComputerChoice().toLowerCase();
-    let playerChoice = getPlayerChoice().toLowerCase();
+function checkWinner(playerChoice, computerChoice) {
     let result;
-    if (playerChoice == 'scissor') playerChoice = 'scissors';
     if (computerChoice == 'rock') {
         if (playerChoice == 'rock') result = 0;
         else if (playerChoice == 'paper') result = 1;
-        else if (playerChoice == 'scissors') result = -1;
-        else result = 'wrong';
+        else result = -1;
     }
     else if (computerChoice == 'paper') {
         if (playerChoice == 'rock') result = -1;
         else if (playerChoice == 'paper') result = 0;
-        else if (playerChoice == 'scissors') result = 1;
-        else result = 'wrong';
+        else result = 1;
     }
     else {
         if (playerChoice == 'rock') result = 1;
         else if (playerChoice == 'paper') result = -1;
-        else if (playerChoice == 'scissors') result = 0;
-        else result = 'wrong';
+        else result = 0;
     }
-    return [computerChoice, playerChoice, result];
+    return result;
 }
 
-function playOneRound(roundNumber, playerScore, computerScore) {
-    let answer = checkWinner();
-    console.log(`Round ${roundNumber} : `);
-    console.log(`Player Choice = ${answer[1]}`);
-    console.log(`Computer Choice = ${answer[0]}`);
-    if (answer[2] == 1) {
-        console.log(`Player Wins!`);
+function playOneRound(playerChoice, computerChoice, answer) {
+    const child1 = document.createElement("p");
+    container.appendChild(child1);
+    child1.innerHTML = `<hr>Round ${roundNumber} :<br>Player Choice = ${playerChoice}<br>Computer Choice = ${computerChoice}`;
+    if (answer == 1) {
+        const child = document.createElement("p");
+        container.appendChild(child);
+        child.textContent = `Player Wins!`;
         playerScore++;
     }
-    else if (answer[2] == 0) {
-        console.log(`Tied`)
+    else if (answer == 0) {
+        const child = document.createElement("p");
+        container.appendChild(child);
+        child.textContent = `Tied`;
     }
-    else if (answer[2] == -1) {
-        console.log(`Computer Wins!`);
+    else if (answer == -1) {
+        const child = document.createElement("p");
+        container.appendChild(child);
+        child.textContent = `Computer Wins!`;
         computerScore++;
     }
     else {
-        console.log(`Invalid Input!`);
+        const child = document.createElement("p");
+        container.appendChild(child);
+        child.textContent = `Invalid Input!`;
     }
-    console.log(`Player Score = ${playerScore}`);
-    console.log(`Computer Score = ${computerScore}`)
-    console.log(` `);
-    return [playerScore, computerScore];
+    const child2 = document.createElement("p");
+    container.appendChild(child2);
+    child2.innerHTML = `Player Score = ${playerScore}<br>Computer Score = ${computerScore}`;
 }
 
-function playGame() {
-    let playerScore = 0;
-    let computerScore = 0;
-    let roundNumber = 1;
-    while (!(playerScore == 5 || computerScore == 5)) {
-        let score = playOneRound(roundNumber, playerScore, computerScore);
-        playerScore = score[0];
-        computerScore = score[1];
+function playGame(playerChoice, computerChoice) {
+    if  (!(playerScore == 5 || computerScore == 5)) {
+        let answer = checkWinner(playerChoice, computerChoice);
+        playOneRound(playerChoice, computerChoice, answer);
         roundNumber++;
     }
-    if (playerScore > computerScore) {
-        console.log(`Player Wins : ${playerScore}-${computerScore}`);
-    }
     else {
-        console.log(`Computer Wins : ${computerScore}-${playerScore}`);
+        if (printed != true) {
+                if (playerScore > computerScore) {
+                const child = document.createElement("p");
+                container.appendChild(child);
+                child.innerHTML = `<hr>Player Wins : ${playerScore}-${computerScore}`;
+                printed = true;
+            }
+            else {
+                const child = document.createElement("p");
+                container.appendChild(child);
+                child.innerHTML = `<hr>Computer Wins : ${computerScore}-${playerScore}`;
+                printed = true;
+            }
+            const child1 = document.createElement("p");
+            container.appendChild(child1);
+            child1.innerHTML = `To play again, refresh the page!<br>Thanks!<hr>`;
+        }
     }
-    console.log(` `)
-    console.log(`To play again, refresh the page!`);
-    console.log(`Thanks!`)
 }
-
-playGame();
